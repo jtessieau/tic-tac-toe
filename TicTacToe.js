@@ -5,16 +5,17 @@ class TicTacToe {
     currentPlayer = this.player1;
 
     state = ["", "", "", "", "", "", "", "", ""];
+    stateMessage = "";
 
     winningConditions = [
-        [1, 1, 1, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 1, 1, 1, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 1, 1, 1],
-        [1, 0, 0, 1, 0, 0, 1, 0, 0],
-        [0, 1, 0, 0, 1, 0, 0, 1, 0],
-        [0, 0, 1, 0, 0, 1, 0, 0, 1],
-        [1, 0, 0, 0, 1, 0, 0, 0, 1],
-        [0, 0, 1, 0, 1, 0, 1, 0, 0],
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 4, 8],
+        [2, 4, 6],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
     ];
 
     isWin = false;
@@ -46,6 +47,12 @@ class TicTacToe {
         }
 
         gridContainer.appendChild(grid);
+        this.updateStateDisplay(`${this.currentPlayer.toUpperCase()}'s turn`);
+    }
+
+    updateStateDisplay(message) {
+        const stateDisplay = document.getElementById("stateDisplay");
+        stateDisplay.innerHTML = message;
     }
 
     switchPlayer() {
@@ -77,33 +84,31 @@ class TicTacToe {
             this.testWinningConditions();
 
             if (this.isWin) {
-                console.log(this.currentPlayer + " wins!");
+                this.updateStateDisplay(
+                    `${this.currentPlayer.toUpperCase()} WINS!`
+                );
             } else if (this.click == 9) {
-                console.log("no winner");
+                this.updateStateDisplay("DRAW!");
             } else {
                 this.switchPlayer();
+                this.updateStateDisplay(
+                    `${this.currentPlayer.toUpperCase()}'s turn`
+                );
             }
         }
     }
 
     testWinningConditions() {
-        let isWinningPatternFound = false;
-
         for (const condition of this.winningConditions) {
-            let isWin = condition.every((el, index) => {
-                if (el === 1) {
-                    return this.state[index] === this.currentPlayer;
-                }
-                return true;
+            let isWin = condition.every((cell) => {
+                return this.state[cell] === this.currentPlayer;
             });
 
             if (isWin) {
-                isWinningPatternFound = true;
+                this.isWin = true;
                 break;
             }
         }
-
-        this.isWin = isWinningPatternFound;
     }
 }
 
@@ -113,9 +118,4 @@ const app = new TicTacToe();
 const initButton = document.querySelector("#initButton");
 initButton.addEventListener("click", () => {
     app.initGrid();
-});
-
-const stateButton = document.querySelector("#stateButton");
-stateButton.addEventListener("click", () => {
-    console.log(app.state);
 });
